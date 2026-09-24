@@ -2,6 +2,7 @@ package com.ruralhealth.platform.service;
 
 import com.ruralhealth.platform.entity.*;
 import com.ruralhealth.platform.repository.*;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +33,7 @@ public class BillingService {
     public record InvoiceLineRequest(Long productId, Integer quantity) {}
 
     @Transactional
-    public Invoice createInvoice(Long patientId, Long consultationId, List<InvoiceLineRequest> lines) {
+    public Invoice createInvoice(@NonNull Long patientId, Long consultationId, @NonNull List<InvoiceLineRequest> lines) {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new IllegalArgumentException("Patient not found: " + patientId));
 
@@ -47,7 +48,7 @@ public class BillingService {
 
         BigDecimal total = BigDecimal.ZERO;
         for (InvoiceLineRequest line : lines) {
-            Product product = productRepository.findById(line.productId())
+            Product product = productRepository.findById(java.util.Objects.requireNonNull(line.productId()))
                     .orElseThrow(() -> new IllegalArgumentException("Product not found: " + line.productId()));
 
             InvoiceItem item = new InvoiceItem();
@@ -77,7 +78,7 @@ public class BillingService {
     }
 
     @Transactional
-    public Payment recordPayment(Long invoiceId, BigDecimal amount, String method) {
+    public Payment recordPayment(@NonNull Long invoiceId, BigDecimal amount, String method) {
         Invoice invoice = invoiceRepository.findById(invoiceId)
                 .orElseThrow(() -> new IllegalArgumentException("Invoice not found: " + invoiceId));
 
@@ -88,8 +89,8 @@ public class BillingService {
         payment = paymentRepository.save(payment);
 
         BigDecimal totalPaid = paymentRepository.findByInvoice_InvoiceId(invoiceId).stream()
-                .map(Payment::getAmountPaid)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+                .map(paymentRecord -> paymentRecord.getAmountPaid())
+                .reduce(BigDecimal.ZERO, (left, right) -> left.add(right));
 
         if (totalPaid.compareTo(invoice.getTotalAmount()) >= 0) {
             invoice.setStatus("PAID");

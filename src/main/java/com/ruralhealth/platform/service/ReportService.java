@@ -19,6 +19,7 @@ import java.util.Map;
  * ledger that invoices, payments, and purchase orders post into.
  */
 @Service
+@SuppressWarnings("null")
 public class ReportService {
 
     private final JournalEntryRepository journalEntryRepository;

@@ -3,6 +3,7 @@ package com.ruralhealth.platform.service;
 import com.ruralhealth.platform.dto.BudgetUtilizationReport;
 import com.ruralhealth.platform.entity.Budget;
 import com.ruralhealth.platform.repository.BudgetRepository;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -18,12 +19,12 @@ public class BudgetService {
         this.budgetRepository = budgetRepository;
     }
 
-    public Budget allocate(Budget budget) {
+    public Budget allocate(@NonNull Budget budget) {
         return budgetRepository.save(budget);
     }
 
     /** Record spend against a department's budget line for a given month, e.g. from a received purchase order. */
-    public Budget recordSpend(Long budgetId, BigDecimal amount) {
+    public Budget recordSpend(@NonNull Long budgetId, BigDecimal amount) {
         Budget budget = budgetRepository.findById(budgetId)
                 .orElseThrow(() -> new IllegalArgumentException("Budget not found: " + budgetId));
         budget.setSpentAmount(budget.getSpentAmount().add(amount));

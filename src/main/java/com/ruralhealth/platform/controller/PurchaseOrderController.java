@@ -4,6 +4,7 @@ import com.ruralhealth.platform.entity.*;
 import com.ruralhealth.platform.repository.*;
 import com.ruralhealth.platform.service.JournalService;
 import org.springframework.http.ResponseEntity;
+import org.jspecify.annotations.NonNull;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,8 +38,8 @@ public class PurchaseOrderController {
 
     @PostMapping
     @Transactional
-    public PurchaseOrder create(@RequestBody CreatePurchaseOrderRequest req) {
-        Supplier supplier = supplierRepository.findById(req.supplierId())
+    public PurchaseOrder create(@NonNull @RequestBody CreatePurchaseOrderRequest req) {
+        Supplier supplier = supplierRepository.findById(java.util.Objects.requireNonNull(req.supplierId()))
                 .orElseThrow(() -> new IllegalArgumentException("Supplier not found: " + req.supplierId()));
 
         PurchaseOrder po = new PurchaseOrder();
@@ -46,7 +47,7 @@ public class PurchaseOrderController {
 
         BigDecimal total = BigDecimal.ZERO;
         for (PurchaseLineDto line : req.lines()) {
-            Product product = productRepository.findById(line.productId())
+            Product product = productRepository.findById(java.util.Objects.requireNonNull(line.productId()))
                     .orElseThrow(() -> new IllegalArgumentException("Product not found: " + line.productId()));
 
             PurchaseItem item = new PurchaseItem();
@@ -67,7 +68,7 @@ public class PurchaseOrderController {
     /** Mark a PO as received: posts Debit Medical Supplies Expense / Credit Cash (or Accounts Payable). */
     @PatchMapping("/{id}/receive")
     @Transactional
-    public ResponseEntity<PurchaseOrder> receive(@PathVariable Long id) {
+    public ResponseEntity<PurchaseOrder> receive(@NonNull @PathVariable Long id) {
         return purchaseOrderRepository.findById(id).map(po -> {
             po.setStatus("RECEIVED");
             purchaseOrderRepository.save(po);

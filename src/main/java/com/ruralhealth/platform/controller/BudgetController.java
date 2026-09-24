@@ -4,6 +4,7 @@ import com.ruralhealth.platform.dto.BudgetUtilizationReport;
 import com.ruralhealth.platform.entity.Budget;
 import com.ruralhealth.platform.repository.BudgetRepository;
 import com.ruralhealth.platform.service.BudgetService;
+import org.jspecify.annotations.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -29,13 +30,13 @@ public class BudgetController {
 
     /** Allocate a department's monthly budget. */
     @PostMapping
-    public Budget allocate(@RequestBody Budget budget) {
+    public Budget allocate(@NonNull @RequestBody Budget budget) {
         return budgetService.allocate(budget);
     }
 
     /** Record spend against a budget line, e.g. after a purchase order is received. */
     @PatchMapping("/{id}/spend")
-    public Budget recordSpend(@PathVariable Long id, @RequestBody Map<String, BigDecimal> body) {
+    public Budget recordSpend(@NonNull @PathVariable Long id, @NonNull @RequestBody Map<String, BigDecimal> body) {
         return budgetService.recordSpend(id, body.get("amount"));
     }
 

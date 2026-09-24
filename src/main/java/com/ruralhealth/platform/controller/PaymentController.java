@@ -2,6 +2,7 @@ package com.ruralhealth.platform.controller;
 
 import com.ruralhealth.platform.entity.Payment;
 import com.ruralhealth.platform.service.BillingService;
+import org.jspecify.annotations.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -19,7 +20,7 @@ public class PaymentController {
     public record PaymentRequest(Long invoiceId, BigDecimal amount, String method) {}
 
     @PostMapping
-    public Payment recordPayment(@RequestBody PaymentRequest req) {
-        return billingService.recordPayment(req.invoiceId(), req.amount(), req.method());
+    public Payment recordPayment(@NonNull @RequestBody PaymentRequest req) {
+        return billingService.recordPayment(java.util.Objects.requireNonNull(req.invoiceId()), req.amount(), req.method());
     }
 }

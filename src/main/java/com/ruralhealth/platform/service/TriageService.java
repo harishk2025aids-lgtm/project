@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Rule-based triage engine.
@@ -116,17 +117,20 @@ public class TriageService {
 
         // Persist as a Consultation record
         Consultation consultation = new Consultation();
-        Patient patient = patientRepository.findById(req.getPatientId())
+        Long patientId = Objects.requireNonNull(req.getPatientId());
+        Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new IllegalArgumentException("Patient not found: " + req.getPatientId()));
         consultation.setPatient(patient);
 
         if (req.getDoctorId() != null) {
-            Doctor doctor = doctorRepository.findById(req.getDoctorId())
+            Long doctorId = Objects.requireNonNull(req.getDoctorId());
+            Doctor doctor = doctorRepository.findById(doctorId)
                     .orElseThrow(() -> new IllegalArgumentException("Doctor not found: " + req.getDoctorId()));
             consultation.setDoctor(doctor);
         }
         if (req.getDepartmentId() != null) {
-            Department dept = departmentRepository.findById(req.getDepartmentId())
+            Long departmentId = Objects.requireNonNull(req.getDepartmentId());
+            Department dept = departmentRepository.findById(departmentId)
                     .orElseThrow(() -> new IllegalArgumentException("Department not found: " + req.getDepartmentId()));
             consultation.setDepartment(dept);
         }

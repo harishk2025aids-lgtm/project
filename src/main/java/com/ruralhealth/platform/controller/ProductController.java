@@ -3,6 +3,7 @@ package com.ruralhealth.platform.controller;
 import com.ruralhealth.platform.entity.Product;
 import com.ruralhealth.platform.repository.ProductRepository;
 import org.springframework.http.ResponseEntity;
+import org.jspecify.annotations.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,12 +24,12 @@ public class ProductController {
     }
 
     @PostMapping
-    public Product create(@RequestBody Product product) {
+    public Product create(@NonNull @RequestBody Product product) {
         return productRepository.save(product);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product updated) {
+    public ResponseEntity<Product> update(@NonNull @PathVariable Long id, @NonNull @RequestBody Product updated) {
         return productRepository.findById(id).map(existing -> {
             updated.setProductId(id);
             return ResponseEntity.ok(productRepository.save(updated));
@@ -36,7 +37,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@NonNull @PathVariable Long id) {
         if (!productRepository.existsById(id)) return ResponseEntity.notFound().build();
         productRepository.deleteById(id);
         return ResponseEntity.noContent().build();

@@ -3,6 +3,7 @@ package com.ruralhealth.platform.controller;
 import com.ruralhealth.platform.entity.Doctor;
 import com.ruralhealth.platform.repository.DoctorRepository;
 import org.springframework.http.ResponseEntity;
+import org.jspecify.annotations.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,17 +24,17 @@ public class DoctorController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Doctor> getById(@PathVariable Long id) {
+    public ResponseEntity<Doctor> getById(@NonNull @PathVariable Long id) {
         return doctorRepository.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public Doctor create(@RequestBody Doctor doctor) {
+    public Doctor create(@NonNull @RequestBody Doctor doctor) {
         return doctorRepository.save(doctor);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Doctor> update(@PathVariable Long id, @RequestBody Doctor updated) {
+    public ResponseEntity<Doctor> update(@NonNull @PathVariable Long id, @NonNull @RequestBody Doctor updated) {
         return doctorRepository.findById(id).map(existing -> {
             updated.setDoctorId(id);
             return ResponseEntity.ok(doctorRepository.save(updated));
@@ -41,7 +42,7 @@ public class DoctorController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@NonNull @PathVariable Long id) {
         if (!doctorRepository.existsById(id)) return ResponseEntity.notFound().build();
         doctorRepository.deleteById(id);
         return ResponseEntity.noContent().build();
