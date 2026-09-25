@@ -3,6 +3,7 @@ package com.ruralhealth.platform.controller;
 import com.ruralhealth.platform.entity.Consultation;
 import com.ruralhealth.platform.repository.ConsultationRepository;
 import org.springframework.http.ResponseEntity;
+import org.jspecify.annotations.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public class ConsultationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Consultation> getById(@PathVariable Long id) {
+    public ResponseEntity<Consultation> getById(@NonNull @PathVariable Long id) {
         return consultationRepository.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
@@ -35,7 +36,7 @@ public class ConsultationController {
 
     /** Move a consultation through the workflow, e.g. { "status": "IN_PROGRESS" } or "COMPLETED". */
     @PatchMapping("/{id}/status")
-    public ResponseEntity<Consultation> updateStatus(@PathVariable Long id, @RequestBody Map<String, String> body) {
+    public ResponseEntity<Consultation> updateStatus(@NonNull @PathVariable Long id, @NonNull @RequestBody Map<String, String> body) {
         return consultationRepository.findById(id).map(c -> {
             c.setStatus(body.get("status"));
             return ResponseEntity.ok(consultationRepository.save(c));

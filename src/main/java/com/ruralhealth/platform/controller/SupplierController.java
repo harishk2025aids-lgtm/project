@@ -2,6 +2,7 @@ package com.ruralhealth.platform.controller;
 
 import com.ruralhealth.platform.entity.Supplier;
 import com.ruralhealth.platform.repository.SupplierRepository;
+import org.jspecify.annotations.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class SupplierController {
     }
 
     @PostMapping
-    public Supplier create(@RequestBody Supplier supplier) {
+    public Supplier create(@NonNull @RequestBody Supplier supplier) {
         return supplierRepository.save(supplier);
     }
 }

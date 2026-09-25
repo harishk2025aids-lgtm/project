@@ -4,6 +4,7 @@ import com.ruralhealth.platform.entity.Invoice;
 import com.ruralhealth.platform.repository.InvoiceRepository;
 import com.ruralhealth.platform.service.BillingService;
 import org.springframework.http.ResponseEntity;
+import org.jspecify.annotations.NonNull;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,7 +30,7 @@ public class InvoiceController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Invoice> getById(@PathVariable Long id) {
+    public ResponseEntity<Invoice> getById(@NonNull @PathVariable Long id) {
         return invoiceRepository.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
